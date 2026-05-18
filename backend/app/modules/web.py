@@ -4,10 +4,8 @@ import datetime
 import re
 
 ##
-from ..modules import json_op, util
-from ..modules.config import *
-
-#TODO: Create support for future dates in get_data 
+from app.modules import json_op, util
+from app.modules.config import *
 
 
 def get_data(url, days_forwarded=0):
@@ -22,7 +20,7 @@ def get_data(url, days_forwarded=0):
     today = util.get_date(days_forwarded)
 
     try:
-        if data is None:
+        if not isinstance(data,dict):
             data = {}
 
         if today in data:
@@ -178,6 +176,10 @@ def complete_data(days_forwarded = 0):
     => Entrypoint
     """
     data = filter_data(days_forwarded)
+    
+    if not data: #Scrape Failed
+        return False
+    
     occupied_rooms = get_occupied_rooms(days_forwarded)
     now = util.get_date(days_forwarded)
     combined_data = []
@@ -214,7 +216,13 @@ def complete_data(days_forwarded = 0):
             }
         )
     
+    if not combined_data:
+        print("no combined_data")
+        return False
+
     completed_data = json_op.load_json(COMPLETE_DATA)
+
+
 
     if completed_data:
       if not any(entry["date"] == now for entry in completed_data):
@@ -232,4 +240,6 @@ def complete_data(days_forwarded = 0):
         ]
 
     json_op.write_json(COMPLETE_DATA, completed_data)
+
+    return True
 

@@ -1,5 +1,8 @@
-from ..modules import json_op, util, web
-from ..modules.config import *
+from fastapi import HTTPException
+from app.modules import json_op
+from app.modules import util 
+from app.modules import web
+from app.modules.config import *
 
 class RoomFilter:
     def __init__(self, days_forwarded=0, search_free=True):
@@ -7,7 +10,6 @@ class RoomFilter:
         self.target_date = util.get_date(days_forwarded)
         self.search_free = search_free
         self.data = []
-        # Initialisiert die Daten direkt beim Erstellen des Objekts
         self._ensure_data()
 
     def _ensure_data(self):
@@ -17,17 +19,18 @@ class RoomFilter:
         date_exists = any(entry.get("date") == self.target_date for entry in self.data)
         
         if not date_exists:
-            # Wenn das Datum fehlt, holen wir es via Scraper
-            web.complete_data(self.days_forwarded)
-            # Nach dem Scrapen laden wir die Datei neu in den Speicher
-            self.data = json_op.load_json(COMPLETE_DATA)
+            success = web.complete_data(self.days_forwarded)
+            if not success:
+                print(f"[WARN] Could not fetch data for {self.target_date}")
+                return
+            self.data = json_op.load_json(COMPLETE_DATA) or []
 
     def search_room(self, desired_room):
         """Sucht nach einem spezifischen Raum am Zieltag."""
         for entry in self.data:
             if entry.get("date") == self.target_date:
                 for building in entry.get("data", []):
-                    building_name = building.get("Bauteil")
+                    building_name = building.get("Gebäude")
                     
                     for room in building.get("Räume", []):
                         if room.get("Raum") == desired_room:
@@ -67,12 +70,12 @@ class RoomFilter:
                     for room in building.get("Räume", []):
                         if not room.get("Besetzt"):
                             free_rooms.append({
-                                "building": building.get("Bauteil"),
+                                "building": building.get("Gebäude"),
                                 "room": room.get("Raum")
                             })
         return free_rooms
     
-    def get_rooms_in_buildings(self, building_name):
+    def get_rooms_in_building(self, building_name):
         """
             gets all rooms in a building 
             return dic(k)

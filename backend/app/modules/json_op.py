@@ -22,8 +22,16 @@ def load_json(filename):
         with open(filename) as file:
             data = json.load(file)
             return data
+    except  FileNotFoundError as e:
+        return []   
+    
+    except json.JSONDecodeError as e:
+        print(f"JSON decode error: {e}")
+        return []
+
     except Exception as e:
-        return f"Error:{e}"    
+        print(f"Unexpected error: {e}")
+        return []
 
 def write_json(filename, data):
     """

@@ -1,4 +1,4 @@
 fastapi
 uvicorn
-os
-json
+beautifulsoup4
+requests
