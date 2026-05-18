@@ -1,0 +1,309 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
+
+:root {
+  --bg:         #0f0f0f;
+  --surface:    #161616;
+  --border:     #2a2a2a;
+  --border-dim: #1e1e1e;
+  --accent:     #e8ff47;
+  --accent-dim: #b8cc2a;
+  --text:       #e8e8e8;
+  --text-dim:   #555;
+  --free:       #47ff8a;
+  --occupied:   #ff5555;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'IBM Plex Sans', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  padding: 2rem 2.5rem;
+}
+
+/* ── HEADER ── */
+header {
+  display: flex;
+  align-items: baseline;
+  gap: 1.2rem;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+header h1 {
+  font-family: var(--mono);
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+}
+
+#current-date {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+/* ── CONTROLS ── */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.control-group label {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.btn-group {
+  display: flex;
+  border: 1px solid var(--border);
+}
+
+.btn-group button {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  padding: 0.42rem 0.85rem;
+  background: var(--surface);
+  color: var(--text-dim);
+  border: none;
+  border-right: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+  white-space: nowrap;
+}
+
+.btn-group button:last-child { border-right: none; }
+.btn-group button:hover { background: #1c1c1c; color: var(--text); }
+
+.btn-group button.active {
+  background: var(--accent);
+  color: #0f0f0f;
+  font-weight: 600;
+}
+
+/* ── SEARCH BARS ── */
+.search-bar {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.2rem;
+}
+
+.search-bar input {
+  flex: 1;
+  max-width: 340px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  padding: 0.48rem 0.8rem;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.search-bar input:focus { border-color: var(--accent); }
+.search-bar input::placeholder { color: var(--text-dim); }
+
+.search-bar button {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.48rem 1rem;
+  background: var(--accent);
+  color: #0f0f0f;
+  border: none;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.search-bar button:hover { background: var(--accent-dim); }
+
+/* ── STATUS BAR ── */
+.status-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-dim);
+  flex-shrink: 0;
+}
+
+.dot.loading { background: var(--accent); animation: blink 0.9s infinite; }
+.dot.ok      { background: var(--free); }
+.dot.err     { background: var(--occupied); }
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+/* ── ROOM RESULT (single room search) ── */
+#room-result {
+  margin-bottom: 1.5rem;
+}
+
+.room-card {
+  border: 1px solid var(--border);
+  padding: 1rem 1.2rem;
+  background: var(--surface);
+  display: grid;
+  gap: 0.3rem;
+}
+
+.room-card .rc-name {
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.room-card .rc-building {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+.room-card .rc-info {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin-top: 0.2rem;
+}
+
+.room-card .rc-status {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  margin-top: 0.4rem;
+}
+
+.room-card .rc-status.free     { color: var(--free); }
+.room-card .rc-status.occupied { color: var(--occupied); }
+
+/* ── BUILDINGS LIST ── */
+.buildings { display: flex; flex-direction: column; gap: 1px; }
+
+.building { border: 1px solid var(--border); }
+
+.building-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 1rem;
+  background: var(--surface);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.1s;
+}
+
+.building-header:hover { background: #1b1b1b; }
+
+.building-header .bname {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.building-header .bstats {
+  display: flex;
+  gap: 1rem;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--text-dim);
+}
+
+.bstats .fc { color: var(--free); }
+.bstats .oc { color: var(--occupied); }
+
+.chevron {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  margin-left: 1rem;
+  transition: transform 0.18s;
+}
+
+.building.open .chevron { transform: rotate(180deg); }
+
+.rooms {
+  display: none;
+  border-top: 1px solid var(--border);
+}
+
+.building.open .rooms { display: block; }
+
+/* ── ROOM ROWS ── */
+.room {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  column-gap: 1rem;
+  padding: 0.45rem 1rem;
+  border-bottom: 1px solid var(--border-dim);
+  transition: background 0.1s;
+}
+
+.room:last-child { border-bottom: none; }
+.room:hover { background: #131313; }
+
+.room-name {
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  color: var(--text);
+}
+
+.room-event {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.room-time {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.badge {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  padding: 0.12rem 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border: 1px solid;
+  white-space: nowrap;
+}
+
+.badge.free     { color: var(--free);     border-color: var(--free); }
+.badge.occupied { color: var(--occupied); border-color: var(--occupied); }
+
+/* ── EMPTY STATE ── */
+.empty {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  padding: 2rem 0;
+  text-align: center;
+}
