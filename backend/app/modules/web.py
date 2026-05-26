@@ -168,6 +168,8 @@ def get_occupied_rooms(days_forwarded = 0):
             occupying_events.append({"time": intervall ,"event": event, "rooms": occupied_rooms})
 
         return occupying_events
+    
+    return []
 
 def complete_data(days_forwarded = 0):
     """
